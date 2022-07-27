@@ -1,0 +1,11 @@
+Model Information:
+* title:	LowPoly Earth
+* source:	https://sketchfab.com/3d-models/lowpoly-earth-ce0cce9b528b47c7984bf0b2b600d705
+* author:	JasperTobias (https://sketchfab.com/JasperTobias)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "LowPoly Earth" (https://sketchfab.com/3d-models/lowpoly-earth-ce0cce9b528b47c7984bf0b2b600d705) by JasperTobias (https://sketchfab.com/JasperTobias) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
