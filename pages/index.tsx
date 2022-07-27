@@ -19,6 +19,9 @@ function GetCamera(props: { setCamera: Dispatch<Camera> }) {
 }
 
 export default function Index() {
+  const [isIdling, setIsIdling] = useState(true);
+  const [camera, setCamera] = useState<Camera | undefined>(undefined);
+
   const earthRef = useRef<THREE.Group>(null);
 
   // on start
@@ -69,14 +72,30 @@ export default function Index() {
 
   return (
     <div className={styles.container}>
+      <div
+        style={{ opacity: isIdling ? undefined : 0 }}
+        className={styles.center}
+      >
+        <h1>World of Domains</h1>
+        <button
+          style={{ pointerEvents: isIdling ? undefined : 'none' }}
+          onClick={() => {
+            setIsIdling(false);
+            resetTween().start();
+          }}
+        >
+          start
+        </button>
+      </div>
       <Canvas
-        className={styles.grabbable}
+        className={isIdling ? styles.grabbable : undefined}
         camera={{ position: defaultPos, fov: 50 }}
       >
+        <GetCamera setCamera={setCamera} />
         <ambientLight intensity={0.5} />
         <EarthModel
           earthRef={earthRef}
-          isIdling={true}
+          isIdling={isIdling}
           groupProps={{
             position: [0, 0, 0],
             rotation: defaultRot
@@ -85,6 +104,8 @@ export default function Index() {
         <Environment preset="city" />
         <OrbitControls
           enableZoom={false}
+          enablePan={false}
+          enableRotate={isIdling}
         />
       </Canvas>
     </div >
