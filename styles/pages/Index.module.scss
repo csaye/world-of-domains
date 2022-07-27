@@ -1,0 +1,11 @@
+.container {
+  height: 100%;
+
+  .grabbable {
+    cursor: grab;
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+}
