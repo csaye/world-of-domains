@@ -1,6 +1,8 @@
 import { Environment, OrbitControls } from '@react-three/drei';
-import { Canvas } from '@react-three/fiber';
-import { useRef } from 'react';
+import { Camera, Canvas, useThree } from '@react-three/fiber';
+import { Easing, Tween, update } from '@tweenjs/tween.js';
+import { Dispatch, useEffect, useRef, useState } from 'react';
+import { Vector3Tuple } from 'three';
 import EarthModel from '../components/EarthModel';
 import styles from '../styles/pages/Index.module.scss';
 
@@ -10,8 +12,24 @@ const defaultRot: [number, number, number] =
 // default camera position
 const defaultPos: [number, number, number] = [3, 0, 0];
 
+function GetCamera(props: { setCamera: Dispatch<Camera> }) {
+  const { setCamera } = props;
+  setCamera(useThree(state => state.camera));
+  return null;
+}
+
 export default function Index() {
   const earthRef = useRef<THREE.Group>(null);
+
+  // on start
+  useEffect(() => {
+    // set up tween animation
+    function animate(time: number) {
+      update(time);
+      requestAnimationFrame(animate);
+    }
+    requestAnimationFrame(animate);
+  }, []);
 
   function resetTween() {
     if (!earthRef.current) throw 'no earth';
