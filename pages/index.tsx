@@ -139,6 +139,17 @@ export default function Index() {
       >
         {isAudio ? <VolumeUp /> : <VolumeOff />}
       </button>
+      <div className={styles.kofiButton}>
+        <KofiButton />
+      </div>
+      <a
+        className={styles.githubBadge}
+        href="https://github.com/csaye/world-of-domains"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <GitHub fontSize="large" />
+      </a>
       {
         !earthReady &&
         <div className={styles.loading}>
@@ -149,18 +160,19 @@ export default function Index() {
         </div>
       }
       <div
-        style={{ opacity: isIdling ? undefined : 0 }}
-        className={styles.center}
+        style={{ opacity: storyIndex === -1 ? undefined : 0 }}
+        className={styles.startTitle}
       >
         <h1>World of Domains</h1>
+        <div className={styles.dummy}>
+          <ArrowForward />
+        </div>
         <button
-          style={{ pointerEvents: isIdling ? undefined : 'none' }}
-          onClick={() => {
-            setIsIdling(false);
-            resetTween().start();
-          }}
+          style={{ pointerEvents: storyIndex === -1 ? undefined : 'none' }}
+          className={styles.button}
+          onClick={() => moveView('forward')}
         >
-          start
+          <ArrowForward />
         </button>
       </div>
       <div
@@ -237,18 +249,13 @@ http://creativecommons.org/licenses/by/4.0/`}
         <ambientLight intensity={0.5} />
         <EarthModel
           earthRef={earthRef}
-          isIdling={isIdling}
+          isRotating={isRotating}
           groupProps={{
             position: [0, 0, 0],
-            rotation: defaultRot
+            rotation: [0, 0, 0]
           }}
         />
         <Environment preset="city" />
-        <OrbitControls
-          enableZoom={false}
-          enablePan={false}
-          enableRotate={isIdling}
-        />
       </Canvas>
     </div >
   );
