@@ -24,9 +24,8 @@ export default function Index() {
 
   const earthRef = useRef<THREE.Group>(null);
 
-  // on start
+  // set up tween animation
   useEffect(() => {
-    // set up tween animation
     function animate(time: number) {
       update(time);
       requestAnimationFrame(animate);
@@ -34,26 +33,22 @@ export default function Index() {
     requestAnimationFrame(animate);
   }, []);
 
-  function resetTween() {
-    if (!earthRef.current) throw 'no earth';
+  // resets camera position to default
+  function resetPosTween() {
     if (!camera) throw 'no camera';
-    const transforms = { rot: earthRef.current.rotation.toArray(), pos: camera.position.toArray() };
-    return new Tween(transforms)
-      .to({ rot: defaultRot.slice(), pos: defaultPos.slice() }, 2000)
+    const pos = camera.position.toArray().slice();
+    return new Tween(pos)
+      .to(defaultPos.slice(), 2000)
       .easing(Easing.Quadratic.Out)
-      .onUpdate(() => {
-        if (!earthRef.current) throw 'no earth';
-        earthRef.current.rotation.set(...transforms.rot as Vector3Tuple);
-        camera.position.set(...transforms.pos);
-      });
+      .onUpdate(() => camera.position.set(...pos as Vector3Tuple));
   }
 
-  function flyTween() {
+  // resets earth rotation to default
+  function resetRotTween() {
     if (!earthRef.current) throw 'no earth';
     const rot = earthRef.current.rotation.toArray().slice();
-    const randomAngle = () => Math.random() * Math.PI * 2 - Math.PI;
     return new Tween(rot)
-      .to([randomAngle(), randomAngle(), randomAngle()], 4000)
+      .to(defaultRot.slice(), 2000)
       .easing(Easing.Quadratic.Out)
       .onUpdate(() => {
         if (!earthRef.current) throw 'no earth';
@@ -61,11 +56,26 @@ export default function Index() {
       });
   }
 
-  function zoomTween(type: 'in' | 'out') {
+  // rotates earth to given destination
+  function flyTween(destination: [number, number, number]) {
+    if (!earthRef.current) throw 'no earth';
+    const rot = earthRef.current.rotation.toArray().slice();
+    return new Tween(rot)
+      .to(destination.slice(), 2000)
+      .easing(Easing.Quadratic.Out)
+      .onUpdate(() => {
+        if (!earthRef.current) throw 'no earth';
+        earthRef.current.rotation.set(...rot as Vector3Tuple);
+      });
+  }
+
+  // zooms camera position to given distance
+  function zoomTween(type: 'in' | 'out' | 'far', long?: boolean) {
     if (!camera) throw 'no camera';
-    const pos = type === 'in' ? defaultPos.slice() : [1.2, 0, 0];
+    const pos = camera.position.toArray().slice();
+    const destZ = type === 'in' ? -1.2 : type === 'out' ? -3 : -20;
     return new Tween(pos)
-      .to(type === 'in' ? [1.2, 0, 0] : defaultPos.slice(), 2000)
+      .to([0, 0, destZ], long ? 2000 : 1000)
       .easing(Easing.Quadratic.Out)
       .onUpdate(() => camera.position.set(...pos as Vector3Tuple));
   }
