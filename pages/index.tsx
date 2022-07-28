@@ -207,6 +207,28 @@ http://creativecommons.org/licenses/by/4.0/`}
         <hr />
         <p>Thanks for playing!</p>
       </div>
+      <div className={styles.arrows}>
+        <button
+          style={
+            storyIndex > -1 ?
+              undefined : { opacity: 0, pointerEvents: 'none' }
+          }
+          className={styles.arrowBack}
+          onClick={() => moveView('back')}
+        >
+          <ArrowBack />
+        </button>
+        <button
+          style={
+            (storyIndex > -1 && storyIndex < stories.length) ?
+              undefined : { opacity: 0, pointerEvents: 'none' }
+          }
+          className={styles.arrowForward}
+          onClick={() => moveView('forward')}
+        >
+          <ArrowForward />
+        </button>
+      </div>
       <Canvas camera={{ position: defaultPos, fov: 50 }}>
         <CanvasData
           setCamera={setCamera}

@@ -154,4 +154,42 @@
       }
     }
   }
+
+  .arrows {
+
+    >.arrowBack,
+    >.arrowForward {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      color: #fff;
+      border: 2px solid #fff;
+      width: 64px;
+      height: 64px;
+      border-radius: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      transition: 0.25s;
+
+      >svg {
+        font-size: 32px;
+      }
+
+      &:hover {
+        border-color: #2196f3;
+        color: #2196f3;
+      }
+    }
+
+    >.arrowBack {
+      left: 32px;
+    }
+
+    >.arrowForward {
+      right: 32px;
+    }
+  }
 }
