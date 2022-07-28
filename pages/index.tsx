@@ -1,16 +1,22 @@
-import { Environment, OrbitControls } from '@react-three/drei';
+import { ArrowBack, ArrowForward, GitHub, Twitter, VolumeOff, VolumeUp } from '@mui/icons-material';
+import { LinearProgress } from '@mui/material';
+import { Environment } from '@react-three/drei';
 import { Camera, Canvas, useThree } from '@react-three/fiber';
 import { Easing, Tween, update } from '@tweenjs/tween.js';
 import { Dispatch, useEffect, useRef, useState } from 'react';
 import { Vector3Tuple } from 'three';
 import EarthModel from '../components/EarthModel';
+import KofiButton from '../components/KofiButton';
+import { stories, Story } from '../public/stories';
 import styles from '../styles/pages/Index.module.scss';
 
 // default earth rotation
 const defaultRot: [number, number, number] =
-  [-Math.PI / 2 - Math.PI / 16, Math.PI / 8, -Math.PI / 2];
+  [-Math.PI / 2, -Math.PI / 16, 0];
 // default camera position
-const defaultPos: [number, number, number] = [3, 0, 0];
+const defaultPos: [number, number, number] = [0, 0, -3];
+
+let loading = false;
 
 type CanvasDataProps = {
   setCamera: Dispatch<Camera>,
@@ -29,14 +35,16 @@ function CanvasData(props: CanvasDataProps) {
 }
 
 export default function Index() {
-  const [isIdling, setIsIdling] = useState(true);
   const [camera, setCamera] = useState<Camera | undefined>(undefined);
   const [isAudio, setIsAudio] = useState(false);
+  const [storyIndex, setStoryIndex] = useState(-1);
   const [sceneReady, setSceneReady] = useState(false);
   const [earthReady, setEarthReady] = useState(false);
 
   const earthRef = useRef<THREE.Group>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  const isRotating = storyIndex === -1 || storyIndex === stories.length;
 
   // check if earth is ready to display
   useEffect(() => {
@@ -70,6 +78,25 @@ export default function Index() {
     if (audio.paused) audio.play();
     else audio.pause();
   }
+
+  // translates rotation of given story into position
+  function translateRot(story: Story): [number, number, number] {
+    const rot = story.rotation;
+    return [rot[1] - Math.PI, -rot[0], 0];
+  }
+
+  // handle key presses
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      const key = e.key.toLowerCase();
+      if (['arrowleft', 'a'].includes(key)) moveView('back');
+      if (['arrowright', 'd', ' ', 'enter'].includes(key)) moveView('forward');
+    }
+    // set up key listeners
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storyIndex, resetPosTween, zoomTween]); // deps accounted for
 
   // set up tween animation
   useEffect(() => {
