@@ -31,10 +31,12 @@ function CanvasData(props: CanvasDataProps) {
 export default function Index() {
   const [isIdling, setIsIdling] = useState(true);
   const [camera, setCamera] = useState<Camera | undefined>(undefined);
+  const [isAudio, setIsAudio] = useState(false);
   const [sceneReady, setSceneReady] = useState(false);
   const [earthReady, setEarthReady] = useState(false);
 
   const earthRef = useRef<THREE.Group>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   // check if earth is ready to display
   useEffect(() => {
@@ -43,6 +45,31 @@ export default function Index() {
     earthRef.current.rotation.set(...defaultRot);
     setEarthReady(true);
   }, [sceneReady, earthRef]);
+
+  // initialize audio track
+  useEffect(() => {
+    // get audio
+    if (!audioRef.current) throw 'no audio ref';
+    const audio = audioRef.current;
+    audio.loop = true;
+    // set up play listeners
+    function onPlay() { setIsAudio(true); }
+    function onPause() { setIsAudio(false); }
+    audio.addEventListener('play', onPlay);
+    audio.addEventListener('pause', onPause);
+    return () => {
+      audio.removeEventListener('play', onPlay);
+      audio.removeEventListener('pause', onPause);
+    }
+  }, []);
+
+  // toggles audio on and off
+  function toggleAudio() {
+    if (!audioRef.current) throw 'no audio ref';
+    const audio = audioRef.current;
+    if (audio.paused) audio.play();
+    else audio.pause();
+  }
 
   // set up tween animation
   useEffect(() => {
@@ -102,6 +129,16 @@ export default function Index() {
 
   return (
     <div className={styles.container}>
+      <audio
+        ref={audioRef}
+        src="/Wind of the Rainforest.mp3"
+      />
+      <button
+        className={styles.audioButton}
+        onClick={toggleAudio}
+      >
+        {isAudio ? <VolumeUp /> : <VolumeOff />}
+      </button>
       {
         !earthReady &&
         <div className={styles.loading}>

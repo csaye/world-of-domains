@@ -1,5 +1,31 @@
 .container {
   height: 100%;
+  overflow: hidden;
+
+  >div:last-of-type {
+    pointer-events: none;
+  }
+
+  >.audioButton {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    background: transparent;
+    color: #fff;
+    border: 2px solid #fff;
+    width: 48px;
+    height: 48px;
+    border-radius: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+
+    &:hover {
+      border-color: #2196f3;
+      color: #2196f3;
+    }
+  }
 
   >.loading {
     background: #111;
