@@ -105,6 +105,29 @@ export default function Index() {
         else zoomTween('out').onComplete(() => zoomTween('in').start()).start();
         flyTween(destination).onComplete(() => loading = false).start();
       }
+    } else { // moving forward
+      // update event index
+      if (storyIndex > stories.length - 1) return;
+      const newStoryIndex = storyIndex + 1;
+      setStoryIndex(newStoryIndex);
+      // handle event index
+      loading = true;
+      if (newStoryIndex === stories.length) { // last slide
+        resetRotTween().start();
+        zoomTween('far', true).onComplete(() => loading = false).start();
+        return;
+      }
+      // get next destination
+      const destination = translateRot(stories[newStoryIndex]);
+      if (newStoryIndex === 0) { // first slide
+        resetPosTween().start();
+        zoomTween('in', true).start();
+        flyTween(destination).onComplete(() => loading = false).start();
+      } else { // middle slide
+        zoomTween('out').onComplete(() => zoomTween('in').start()).start();
+        flyTween(destination).onComplete(() => loading = false).start();
+      }
+    }
   }
 
   // handle key presses
