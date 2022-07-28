@@ -1,11 +1,19 @@
 .container {
   height: 100%;
 
-  .grabbable {
-    cursor: grab;
+  >.loading {
+    background: #111;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
 
-    &:active {
-      cursor: grabbing;
+    h1 {
+      font-size: 56px;
+      margin: 0 0 12px 0;
     }
   }
 

@@ -12,17 +12,37 @@ const defaultRot: [number, number, number] =
 // default camera position
 const defaultPos: [number, number, number] = [3, 0, 0];
 
-function GetCamera(props: { setCamera: Dispatch<Camera> }) {
-  const { setCamera } = props;
-  setCamera(useThree(state => state.camera));
+type CanvasDataProps = {
+  setCamera: Dispatch<Camera>,
+  setSceneReady: Dispatch<boolean>
+};
+
+function CanvasData(props: CanvasDataProps) {
+  const { setCamera, setSceneReady } = props;
+
+  // set states
+  const state = useThree();
+  setCamera(state.camera);
+  setSceneReady(!!state.scene.children.length);
+
   return null;
 }
 
 export default function Index() {
   const [isIdling, setIsIdling] = useState(true);
   const [camera, setCamera] = useState<Camera | undefined>(undefined);
+  const [sceneReady, setSceneReady] = useState(false);
+  const [earthReady, setEarthReady] = useState(false);
 
   const earthRef = useRef<THREE.Group>(null);
+
+  // check if earth is ready to display
+  useEffect(() => {
+    if (!sceneReady) return;
+    if (!earthRef.current) throw 'no earth';
+    earthRef.current.rotation.set(...defaultRot);
+    setEarthReady(true);
+  }, [sceneReady, earthRef]);
 
   // set up tween animation
   useEffect(() => {
@@ -82,6 +102,15 @@ export default function Index() {
 
   return (
     <div className={styles.container}>
+      {
+        !earthReady &&
+        <div className={styles.loading}>
+          <div>
+            <h1>Loading world...</h1>
+            <LinearProgress />
+          </div>
+        </div>
+      }
       <div
         style={{ opacity: isIdling ? undefined : 0 }}
         className={styles.center}
@@ -97,11 +126,12 @@ export default function Index() {
           start
         </button>
       </div>
-      <Canvas
-        className={isIdling ? styles.grabbable : undefined}
-        camera={{ position: defaultPos, fov: 50 }}
       >
-        <GetCamera setCamera={setCamera} />
+      <Canvas camera={{ position: defaultPos, fov: 50 }}>
+        <CanvasData
+          setCamera={setCamera}
+          setSceneReady={setSceneReady}
+        />
         <ambientLight intensity={0.5} />
         <EarthModel
           earthRef={earthRef}
