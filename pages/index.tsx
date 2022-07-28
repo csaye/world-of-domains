@@ -163,7 +163,50 @@ export default function Index() {
           start
         </button>
       </div>
+      <div
+        style={{
+          opacity: storyIndex === stories.length ? undefined : 0,
+          pointerEvents: storyIndex === stories.length ? undefined : 'none'
+        }}
+        className={styles.endTitle}
       >
+        <h1>The End</h1>
+        <div
+          className={styles.buttons}
+        >
+          <a
+            className={styles.twitter}
+            href="https://twitter.com/intent/follow?screen_name=CooperComputer"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Twitter /> Follow Me on Twitter
+          </a>
+          <KofiButton />
+        </div>
+        <div className={styles.credits}>
+          <h2>Credits</h2>
+          <p>{`"LowPoly Earth" by JasperTobias (https://skfb.ly/6TAUn)
+Licensed under Creative Commons: By Attribution 4.0 License
+http://creativecommons.org/licenses/by/4.0/`}</p>
+          <p>{`“Wind of the Rainforest" Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0 License
+http://creativecommons.org/licenses/by/4.0/`}
+          </p>
+          <p>
+            <a
+              href="https://github.com/csaye/world-of-domains"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <GitHub />
+              View project on GitHub
+            </a>
+          </p>
+        </div>
+        <hr />
+        <p>Thanks for playing!</p>
+      </div>
       <Canvas camera={{ position: defaultPos, fov: 50 }}>
         <CanvasData
           setCamera={setCamera}
