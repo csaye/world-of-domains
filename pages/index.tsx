@@ -85,6 +85,28 @@ export default function Index() {
     return [rot[1] - Math.PI, -rot[0], 0];
   }
 
+  // moves view given direction
+  function moveView(direction: 'back' | 'forward') {
+    if (loading) return;
+    if (direction === 'back') { // moving back
+      // update event index
+      if (storyIndex === -1) return;
+      const newStoryIndex = storyIndex - 1;
+      setStoryIndex(newStoryIndex);
+      // handle event index
+      loading = true;
+      if (newStoryIndex === -1) { // title slide
+        resetRotTween().start();
+        resetPosTween().onComplete(() => loading = false).start();
+      } else {
+        // get next destination
+        const destination = translateRot(stories[newStoryIndex]);
+        if (newStoryIndex === stories.length - 1) zoomTween('in', true).start();
+        else zoomTween('out').onComplete(() => zoomTween('in').start()).start();
+        flyTween(destination).onComplete(() => loading = false).start();
+      }
+  }
+
   // handle key presses
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
