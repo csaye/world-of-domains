@@ -1,9 +1,11 @@
 import { useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { RefObject } from 'react';
+import { stories } from '../public/stories';
+import StoryBox from './StoryBox';
 
 type Props = {
-  isIdling: boolean,
+  isRotating: boolean,
   earthRef: RefObject<THREE.Group>,
   groupProps: {
     position: [number, number, number]
@@ -12,15 +14,18 @@ type Props = {
 };
 
 export default function EarthModel(props: Props) {
-  const { isIdling, earthRef, groupProps } = props;
+  const { isRotating, earthRef, groupProps } = props;
 
-  // "LowPoly Earth" (https://skfb.ly/6TAUn) by JasperTobias is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
   const { nodes, materials } = useGLTF('/lowpoly_earth/scene.gltf') as any;
 
   // animate model
   useFrame(() => {
     if (!earthRef.current) throw 'no earth';
-    if (isIdling) earthRef.current.rotation.z += 0.002;
+    if (isRotating) {
+      const rot = earthRef.current.rotation;
+      rot.z += 0.002;
+      if (rot.z >= Math.PI) rot.z -= Math.PI * 2; // wrap rotation
+    }
   });
 
   return (
@@ -32,6 +37,14 @@ export default function EarthModel(props: Props) {
       <mesh geometry={nodes['URF-Height_Lampd_Ice_0'].geometry} material={materials.Lampd_Ice} />
       <mesh geometry={nodes['URF-Height_watr_0'].geometry} material={materials.watr} material-roughness={0} />
       <mesh geometry={nodes['URF-Height_Lampd_0'].geometry} material={materials.Lampd} material-color="limegreen" />
+      {
+        stories.map((story, i) =>
+          <StoryBox
+            {...story}
+            key={i}
+          />
+        )
+      }
     </group>
   );
 }
