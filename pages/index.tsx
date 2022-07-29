@@ -16,8 +16,6 @@ const defaultRot: [number, number, number] =
 // default camera position
 const defaultPos: [number, number, number] = [0, 0, -3];
 
-let loading = false;
-
 type CanvasDataProps = {
   setCamera: Dispatch<Camera>,
   setSceneReady: Dispatch<boolean>
@@ -40,6 +38,7 @@ export default function Index() {
   const [storyIndex, setStoryIndex] = useState(-1);
   const [sceneReady, setSceneReady] = useState(false);
   const [earthReady, setEarthReady] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const earthRef = useRef<THREE.Group>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -94,16 +93,16 @@ export default function Index() {
       const newStoryIndex = storyIndex - 1;
       setStoryIndex(newStoryIndex);
       // handle event index
-      loading = true;
+      setLoading(true);
       if (newStoryIndex === -1) { // title slide
         resetRotTween().start();
-        resetPosTween().onComplete(() => loading = false).start();
+        resetPosTween().onComplete(() => setLoading(false)).start();
       } else {
         // get next destination
         const destination = translateRot(stories[newStoryIndex]);
         if (newStoryIndex === stories.length - 1) zoomTween('in', true).start();
         else zoomTween('out').onComplete(() => zoomTween('in').start()).start();
-        flyTween(destination).onComplete(() => loading = false).start();
+        flyTween(destination).onComplete(() => setLoading(false)).start();
       }
     } else { // moving forward
       // update event index
@@ -111,10 +110,10 @@ export default function Index() {
       const newStoryIndex = storyIndex + 1;
       setStoryIndex(newStoryIndex);
       // handle event index
-      loading = true;
+      setLoading(true);
       if (newStoryIndex === stories.length) { // last slide
         resetRotTween().start();
-        zoomTween('far', true).onComplete(() => loading = false).start();
+        zoomTween('far', true).onComplete(() => setLoading(false)).start();
         return;
       }
       // get next destination
@@ -122,10 +121,10 @@ export default function Index() {
       if (newStoryIndex === 0) { // first slide
         resetPosTween().start();
         zoomTween('in', true).start();
-        flyTween(destination).onComplete(() => loading = false).start();
+        flyTween(destination).onComplete(() => setLoading(false)).start();
       } else { // middle slide
         zoomTween('out').onComplete(() => zoomTween('in').start()).start();
-        flyTween(destination).onComplete(() => loading = false).start();
+        flyTween(destination).onComplete(() => setLoading(false)).start();
       }
     }
   }
