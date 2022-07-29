@@ -3,6 +3,7 @@ import { LinearProgress } from '@mui/material';
 import { Environment } from '@react-three/drei';
 import { Camera, Canvas, useThree } from '@react-three/fiber';
 import { Easing, Tween, update } from '@tweenjs/tween.js';
+import Image from 'next/image';
 import { Dispatch, useEffect, useRef, useState } from 'react';
 import { Vector3Tuple } from 'three';
 import EarthModel from '../components/EarthModel';
@@ -246,6 +247,28 @@ export default function Index() {
           <ArrowForward />
         </button>
       </div>
+      {
+        (storyIndex > -1 && storyIndex < stories.length) &&
+        <div
+          style={loading ? { opacity: 0, pointerEvents: 'none' } : undefined}
+          className={styles.story}
+        >
+          {
+            !loading &&
+            <div>
+              <h1>{stories[storyIndex].domain}</h1>
+              <h2>{stories[storyIndex].date}</h2>
+              <p>{stories[storyIndex].description}</p>
+              <Image
+                width="192"
+                height="192"
+                src={`/storyimg/${stories[storyIndex].image}`}
+                alt="world"
+              />
+            </div>
+          }
+        </div>
+      }
       <div
         style={{
           opacity: storyIndex === stories.length ? undefined : 0,
