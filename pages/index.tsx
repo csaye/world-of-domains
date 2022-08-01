@@ -17,6 +17,8 @@ const defaultRot: [number, number, number] =
 // default camera position
 const defaultPos: [number, number, number] = [0, 0, -3];
 
+const transitionTime = 1500;
+
 type CanvasDataProps = {
   setCamera: Dispatch<Camera>,
   setSceneReady: Dispatch<boolean>
@@ -79,7 +81,7 @@ export default function Index() {
     else audio.pause();
   }
 
-  // translates rotation of given story into position
+  // translates rotation of given story into fly position
   function translateRot(story: Story): [number, number, number] {
     const rot = story.rotation;
     return [rot[1] - Math.PI, -rot[0], 0];
@@ -115,7 +117,7 @@ export default function Index() {
       // handle event index
       setLoading(true);
       if (newStoryIndex === -1) { // title slide
-        resetRotTween().start();
+        flyTween(defaultRot).start();
         resetPosTween().onComplete(() => setLoading(false)).start();
       } else {
         // get next destination
@@ -132,7 +134,7 @@ export default function Index() {
       // handle event index
       setLoading(true);
       if (newStoryIndex === stories.length) { // last slide
-        resetRotTween().start();
+        flyTween(defaultRot).start();
         zoomTween('far', true).onComplete(() => setLoading(false)).start();
         return;
       }
@@ -176,22 +178,9 @@ export default function Index() {
     if (!camera) throw 'no camera';
     const pos = camera.position.toArray().slice();
     return new Tween(pos)
-      .to(defaultPos.slice(), 2000)
+      .to(defaultPos.slice(), transitionTime)
       .easing(Easing.Quadratic.Out)
       .onUpdate(() => camera.position.set(...pos as Vector3Tuple));
-  }
-
-  // resets earth rotation to default
-  function resetRotTween() {
-    if (!earthRef.current) throw 'no earth';
-    const rot = earthRef.current.rotation.toArray().slice();
-    return new Tween(rot)
-      .to(defaultRot.slice(), 2000)
-      .easing(Easing.Quadratic.Out)
-      .onUpdate(() => {
-        if (!earthRef.current) throw 'no earth';
-        earthRef.current.rotation.set(...rot as Vector3Tuple);
-      });
   }
 
   // rotates earth to given destination
@@ -214,7 +203,7 @@ export default function Index() {
     const pos = camera.position.toArray().slice();
     const destZ = type === 'in' ? -1.2 : type === 'out' ? -3 : -20;
     return new Tween(pos)
-      .to([0, 0, destZ], long ? 2000 : 1000)
+      .to([0, 0, destZ], transitionTime / (long ? 1 : 2))
       .easing(Easing.Quadratic.Out)
       .onUpdate(() => camera.position.set(...pos as Vector3Tuple));
   }
