@@ -10,11 +10,12 @@ type Props = {
   groupProps: {
     position: [number, number, number]
     rotation: [number, number, number]
-  }
+  },
+  boxesVisible: boolean
 };
 
 export default function EarthModel(props: Props) {
-  const { isRotating, earthRef, groupProps } = props;
+  const { isRotating, earthRef, groupProps, boxesVisible } = props;
 
   const { nodes, materials } = useGLTF('/lowpoly_earth/scene.gltf') as any;
 
@@ -41,6 +42,7 @@ export default function EarthModel(props: Props) {
         stories.map((story, i) =>
           <StoryBox
             {...story}
+            visible={boxesVisible}
             key={i}
           />
         )

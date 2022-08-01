@@ -348,6 +348,7 @@ http://creativecommons.org/licenses/by/4.0/`}
             position: [0, 0, 0],
             rotation: [0, 0, 0]
           }}
+          boxesVisible={storyIndex < stories.length}
         />
         <Environment preset="city" />
       </Canvas>

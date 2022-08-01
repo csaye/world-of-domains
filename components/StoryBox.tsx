@@ -4,8 +4,8 @@ import { Story } from "../public/stories";
 // distance from center
 const dist = 1.01;
 
-export default function Box(props: Story) {
-  const { rotation } = props;
+export default function Box(props: Story & { visible: boolean }) {
+  const { rotation, visible } = props;
 
   const meshRef = useRef<THREE.Mesh>(null);
 
@@ -29,6 +29,7 @@ export default function Box(props: Story) {
     <mesh
       ref={meshRef}
       position={getPos()}
+      visible={visible}
     >
       <boxGeometry args={[0.1, 0.1, 0.1]} />
       <meshStandardMaterial color="white" />
