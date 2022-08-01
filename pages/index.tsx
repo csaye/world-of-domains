@@ -268,12 +268,21 @@ export default function Index() {
               <h1>{stories[storyIndex].domain}</h1>
               <h2>{stories[storyIndex].date}</h2>
               <p>{stories[storyIndex].description}</p>
-              <Image
-                width="192"
-                height="192"
-                src={`/storyimg/${stories[storyIndex].image}`}
-                alt="world"
-              />
+              <a
+                href={stories[storyIndex].archive}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Image
+                  priority
+                  placeholder="blur"
+                  width="640"
+                  height="360"
+                  src={`/storyimg/${stories[storyIndex].image}`}
+                  blurDataURL={`/storyimg/${stories[storyIndex].image}`}
+                  alt={stories[storyIndex].domain}
+                />
+              </a>
             </div>
           }
         </div>
