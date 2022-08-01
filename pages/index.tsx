@@ -85,6 +85,25 @@ export default function Index() {
     return [rot[1] - Math.PI, -rot[0], 0];
   }
 
+  // optimizes given destination to be closest to current postiion
+  function optimizeDestination(destination: [number, number, number]): [number, number, number] {
+    if (!earthRef.current) throw 'no earth';
+    const curr = earthRef.current.rotation;
+    let destX = destination[0];
+    let destY = destination[1];
+    if (destX < curr.x) {
+      while (destX + Math.PI < curr.x) destX += Math.PI * 2;
+    } else {
+      while (destX - Math.PI > curr.x) destX -= Math.PI * 2;
+    }
+    if (destY < curr.y) {
+      while (destY + Math.PI < curr.y) destY += Math.PI * 2;
+    } else {
+      while (destY - Math.PI > curr.y) destY -= Math.PI * 2;
+    }
+    return [destX, destY, 0];
+  }
+
   // moves view given direction
   function moveView(direction: 'back' | 'forward') {
     if (loading) return;
@@ -179,8 +198,9 @@ export default function Index() {
   function flyTween(destination: [number, number, number]) {
     if (!earthRef.current) throw 'no earth';
     const rot = earthRef.current.rotation.toArray().slice();
+    const dest = optimizeDestination(destination);
     return new Tween(rot)
-      .to(destination.slice(), 2000)
+      .to(dest, transitionTime)
       .easing(Easing.Quadratic.Out)
       .onUpdate(() => {
         if (!earthRef.current) throw 'no earth';
